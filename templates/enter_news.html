@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Enter some news!</title>
+    </head>
+    <body>
+        <form action="{{ action }}" method="POST" name="news">
+            <textarea name="news_text" rows="30", cols="90">{{ text }}</textarea>
+            <br/>
+            <input type="submit">
+        </form>
+    </body>
+</html>

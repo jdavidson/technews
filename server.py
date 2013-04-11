@@ -1,22 +1,33 @@
-from flask import flask
-import mypocket
+from flask import Flask, request, url_for, render_template
+import mypocket, build
 
 app = Flask(__name__)
-setup() #setup pocket
 
 @app.route('/')
 def base_page():
-    return 'Not Implemented'
+    return 'Nothing Here'
 
-@app.route('/get_news/')
+@app.route('/news/')
 def get_news():
     return mypocket.gimme_markdown()
 
-@app.route('/convert_news/')
+@app.route('/news/html')
+def get_news_html():
+    return build.convert_news(mypocket.gimme_markdown(), '')
+
+@app.route('/convert/', methods=['GET', 'POST'])
 def convert_news():
-    return 'Not Implemented'
+    if request.method == 'POST':
+        return build.convert_news(request.form['news_text'], '')
+    else:
+        action = url_for('convert_news')
+        return render_template('enter_news.html', action=action, text='')
 
-
+@app.route('/convert/news')
+def convert_shown_news():
+    action = url_for('convert_news')
+    text = mypocket.gimme_markdown()
+    return render_template('enter_news.html', action=action, text=text)
 
 if __name__ == '__main__':
     app.run(debug=True)

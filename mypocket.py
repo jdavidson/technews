@@ -38,19 +38,23 @@ def get_items(pocket):
     items = pocket.get()
     return items
 
-def setup_pocket(redirect_uri):
+def setup_pocket():
     pocket = ''
-    f = os.path.expanduser(os.path.join('~', '.pocketconfig'))
+    f = os.path.expanduser(os.path.join('~', '.config', 'pocket.txt'))
     if os.path.exists(f):
         with file(f, 'r') as target:
             data = pickle.load(target)
         consumerkey = data['consumer_key']
-        pocket = api.API(consumerkey, redirect_uri)
+        pocket = api.API(consumerkey)
         pocket.authenticate(data['access_token'])
+    elif 'POCKET_ACCESS_KEY' in os.environ:
+        pocket = api.API(ckey)
+        pocket.authenticate(os.environ['POCKET_ACCESS_KEY'])
     else:
-        pocket = api.API(ckey, redirect_uri)
+        print "AUTHENTICATION FAILED - UNDEFINED FOR NOW"
+        pocket = api.API(ckey)
         pocket.authenticate()
-        data = {'consumer_key': consumerkey,
+        data = {'consumer_key': ckey,
                 'access_token': api.access_token}
         with file(f, 'w') as target:
             pickle.dump(data, target)
@@ -76,13 +80,13 @@ def convert_to_markdown(items):
     sources = ""
 
     for item in items:
-        text += "%s:: %s [%s][%d]\n\n" % (item['title'], item['text'], item['source'], items.index(item))
+        text += "_%s_:: %s [%s][%d]\n\n" % (item['title'], item['text'], item['source'], items.index(item))
         sources += "[%d]: [%s]\n" % (items.index(item), item['url'])
 
     return text + "\n\n" + sources
 
 def gimme_markdown():
-    pocket = setup_pocket('about:blank')
+    pocket = setup_pocket()
     items = get_items(pocket)
     new_items = parse_items(items)
     markdown = convert_to_markdown(new_items)

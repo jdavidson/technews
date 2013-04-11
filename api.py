@@ -1,5 +1,3 @@
-# from https://bitbucket.org/bivab/pocket-v3/src/6c4ff63e5aab/pocketv3/api.py?at=default
-
 import requests
 import json
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
@@ -37,11 +35,10 @@ class API(object):
             'X-Accept': 'application/json',
     }
 
-    def __init__(self, consumer_key, redirect_uri):
+    def __init__(self, consumer_key):
         self.consumer_key = consumer_key
         self.actions = []
         self.authentication = None
-        self.redirect_uri = redirect_uri
 
     @property
     def access_token(self):
@@ -52,7 +49,7 @@ class API(object):
         return self.authentication.code
 
     def authenticate(self, access_token=None):
-        self.authentication = Authenticator(self.consumer_key, self.redirect_uri)
+        self.authentication = Authenticator(self.consumer_key)
         if access_token is None:
             self.authentication.auth()
         else:
@@ -166,9 +163,8 @@ class Authenticator(object):
             'X-Accept': 'application/json',
     }
 
-    def __init__(self, consumer_key, redirect_uri):
+    def __init__(self, consumer_key):
         self.consumer_key = consumer_key
-        self.redirect_uri = redirect_uri
 
     def auth(self):
         self.code = self.get_request_token()
@@ -198,11 +194,10 @@ class Authenticator(object):
         Step 4: Receive the callback from Pocket
         """
         import webbrowser
-        print self.redirect_uri
         webbrowser.open(
                 self.URLs['authorize_token'] % {
                 'request_token': self.code,
-                'redirect_uri': self.redirect_uri
+                'redirect_uri': 'http://localhost:8000'
         })
         wait_for_response(8000)
 
@@ -237,8 +232,9 @@ if __name__ == '__main__':
         api = API(consumerkey)
         api.authenticate(data['access_token'])
     else:
-        assert os.environ(['POCKET_CONSUMER_KEY']) > 1, 'couldn\'t find POCKET_CONSUMER_KEY'
-        consumerkey = os.environ(['POCKET_CONSUMER_KEY'])
+        assert len(sys.argv) > 1, 'pass consumerkey on the commandline when ' \
+                                  'calling this file for the first time'
+        consumerkey = sys.argv[1]
         api = API(consumerkey)
         api.authenticate()
         data = {'consumer_key': consumerkey,
