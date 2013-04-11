@@ -1,4 +1,4 @@
-from flask import Flask, request, url_for, render_template
+from flask import Flask, request, url_for, render_template, Response
 import mypocket, build
 
 app = Flask(__name__)
@@ -9,7 +9,7 @@ def base_page():
 
 @app.route('/news/')
 def get_news():
-    return mypocket.gimme_markdown()
+    return Response(mypocket.gimme_markdown(), mimetype="text/plain")
 
 @app.route('/news/html')
 def get_news_html():

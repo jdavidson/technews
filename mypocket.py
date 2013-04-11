@@ -81,9 +81,9 @@ def convert_to_markdown(items):
 
     for item in items:
         text += "_%s_:: %s [%s][%d]\n\n" % (item['title'], item['text'], item['source'], items.index(item))
-        sources += "[%d]: [%s]\n" % (items.index(item), item['url'])
+        sources += "\n[%d]: [%s]" % (items.index(item), item['url'])
 
-    return text + "\n\n" + sources
+    return text + "\n" + sources
 
 def gimme_markdown():
     pocket = setup_pocket()
