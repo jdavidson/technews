@@ -18,6 +18,9 @@ def nextMonday():
     nextMonday = d + (datetime.timedelta((7 - d.weekday()) % 7)) # get the next monday, inclusing (ie if today is Monday, give today)
     return nextMonday
 
+def strFile():
+    return nextMonday().strftime('%y%m%d - News')
+
 def html_from_markdown(template, news, financings, formatted_date):
 
     news_text = markdown2.markdown(news)

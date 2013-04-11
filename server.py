@@ -1,11 +1,21 @@
 from flask import Flask, request, url_for, render_template, Response
 import mypocket, build
+import boto
+from boto.s3.key import Key
+
+s3bucketid = 'cchild-technews'
 
 app = Flask(__name__)
+conn = boto.connect_s3()
 
 @app.route('/')
 def base_page():
-    return 'Nothing Here'
+    bucket = conn.get_bucket(s3bucketid)
+    k = bucket.get_key(build.strFile() + '.html')
+    if k:
+        return k.get_contents_as_string()
+    else:
+        return "This week's news hasn't been posted yet, and there's no way to see last week's news yet."
 
 @app.route('/news/')
 def get_news():
@@ -18,7 +28,14 @@ def get_news_html():
 @app.route('/convert/', methods=['GET', 'POST'])
 def convert_news():
     if request.method == 'POST':
-        return build.convert_news(request.form['news_text'], '')
+        html = build.convert_news(request.form['news_text'], '')
+
+        if request.form['save'] == 'save':
+            bucket = conn.get_bucket(s3bucketid)
+            k = Key(bucket)
+            k.key = build.strFile() + '.html'
+            k.set_contents_from_string(html)
+        return html
     else:
         action = url_for('convert_news')
         return render_template('enter_news.html', action=action, text='')
