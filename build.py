@@ -9,8 +9,7 @@ def convert_news(news, financings):
     template = template_file.read()
     template_file.close()
 
-    date = nextMonday()
-    formatted_date = date.strftime('%B %d, %Y')
+    formatted_date = strMonday()
     return html_from_markdown(template, news, financings, formatted_date)
 
 def nextMonday():
@@ -20,6 +19,9 @@ def nextMonday():
 
 def strFile():
     return nextMonday().strftime('%y%m%d - News')
+
+def strMonday():
+    return nextMonday().strftime('%B %d, %Y')
 
 def html_from_markdown(template, news, financings, formatted_date):
 
@@ -40,9 +42,8 @@ def html_from_markdown(template, news, financings, formatted_date):
 
 if __name__ == '__main__':
     # format the date
-    date = nextMonday()
-    strMonday = date.strftime('%B %d, %Y')
-    strFile = date.strftime('%y%m%d - News')
+    strMonday = strMonday()
+    strFile = strFile()
 
     # get the template
     template_file = open('tools/template.html', 'r')

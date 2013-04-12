@@ -1,5 +1,5 @@
 from flask import Flask, request, url_for, render_template, Response
-import mypocket, build
+import mypocket, build, read_excel
 import boto
 from boto.s3.key import Key
 
@@ -16,6 +16,23 @@ def base_page():
         return k.get_contents_as_string()
     else:
         return "This week's news hasn't been posted yet, and there's no way to see last week's news yet."
+
+@app.route('/bootstrap.css')
+def return_css():
+    return open('bootstrap.css').read()
+
+@app.route('/bootstrap.js')
+def return_js():
+    return open('bootstrap.js').read()
+
+@app.route('/financings/', methods=['GET', 'POST'])
+def convert_financings():
+    if request.method == 'POST':
+        url = request.form['url']
+        table = read_excel.parse_url(url)
+        return render_template('financings.html', table=table, date=build.strMonday())
+    else:
+        return render_template('enter_excel.html', action=url_for('convert_financings'))
 
 @app.route('/news/')
 def get_news():
