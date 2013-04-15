@@ -94,5 +94,15 @@ def gimme_markdown():
 
     return initial_html + markdown
 
+def archive_all_items():
+    pocket = setup_pocket()
+    items = get_items(pocket)
+    return archive_items_commit(pocket, items['list'].keys())
+
+def archive_items_commit(pocket, item_ids):
+    for item_id in item_ids:
+        pocket.actions.append(('archive', {'action': 'archive', 'item_id': item_id}))
+    return pocket.commit()
+
 if __name__ == '__main__':
     print gimme_markdown()
