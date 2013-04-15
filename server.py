@@ -8,6 +8,16 @@ s3bucketid = 'cchild-technews'
 app = Flask(__name__)
 conn = boto.connect_s3()
 
+## Static Files (this is cheating and should be moved to amazon)
+@app.route('/bootstrap.css')
+def return_css():
+    return open('bootstrap.css').read()
+
+@app.route('/bootstrap.js')
+def return_js():
+    return open('bootstrap.js').read()
+
+## show the last saved news file
 @app.route('/')
 def base_page():
     bucket = conn.get_bucket(s3bucketid)
@@ -17,14 +27,7 @@ def base_page():
     else:
         return "This week's news hasn't been posted yet, and there's no way to see last week's news yet."
 
-@app.route('/bootstrap.css')
-def return_css():
-    return open('bootstrap.css').read()
-
-@app.route('/bootstrap.js')
-def return_js():
-    return open('bootstrap.js').read()
-
+## still in progress - you need to post a url to an excel file which isn't all that great, but it does work
 @app.route('/financings/', methods=['GET', 'POST'])
 def convert_financings():
     if request.method == 'POST':
@@ -34,14 +37,17 @@ def convert_financings():
     else:
         return render_template('enter_excel.html', action=url_for('convert_financings'))
 
+## show the markdown for the news
 @app.route('/news/')
 def get_news():
     return Response(mypocket.gimme_markdown(), mimetype="text/plain")
 
+## convert the default markdown to html
 @app.route('/news/html')
 def get_news_html():
     return build.convert_news(mypocket.gimme_markdown(), '')
 
+## convert submitted markdown to html, and potentially save it
 @app.route('/convert/', methods=['GET', 'POST'])
 def convert_news():
     if request.method == 'POST':
@@ -57,11 +63,17 @@ def convert_news():
         action = url_for('convert_news')
         return render_template('enter_news.html', action=action, text='')
 
+## show the markdown convert dialog with the news filled in
 @app.route('/convert/news')
 def convert_shown_news():
     action = url_for('convert_news')
     text = mypocket.gimme_markdown()
     return render_template('enter_news.html', action=action, text=text)
+
+## archive everything (separate action so you are sure when you want to do it) - just dumps out status
+@app.route('/archive/')
+def archive_news():
+    return mypocket.archive_all_items()
 
 if __name__ == '__main__':
     app.run(debug=True)

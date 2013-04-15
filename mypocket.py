@@ -97,7 +97,14 @@ def gimme_markdown():
 def archive_all_items():
     pocket = setup_pocket()
     items = get_items(pocket)
-    return archive_items_commit(pocket, items['list'].keys())
+    if len(items['list']) > 0:
+        status = archive_items_commit(pocket, items['list'].keys())
+        if status['status'] == 1:
+            return 'Archived %d items' % (len(items['list']))
+        else:
+            return status['action_results']
+    else:
+        return 'Nothing to Archive'
 
 def archive_items_commit(pocket, item_ids):
     for item_id in item_ids:
