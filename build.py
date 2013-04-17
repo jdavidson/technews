@@ -1,11 +1,13 @@
 import os, sys, datetime
 import markdown2
 
+default_template_file = 'templates/news.html'
+
 ## run with one argument - a markdown file to be converted.  Always assumes you want the dates to be the next monday (or today if it is a monday)
 ## needs to be converted for headless use
 
 def convert_news(news, financings):
-    template_file = open('tools/template.html', 'r')
+    template_file = open(default_template_file, 'r')
     template = template_file.read()
     template_file.close()
 
@@ -46,7 +48,7 @@ if __name__ == '__main__':
     strFile = strFile()
 
     # get the template
-    template_file = open('tools/template.html', 'r')
+    template_file = open(default_template_file, 'r')
     template = template_file.read()
     template_file.close()
 
