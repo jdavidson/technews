@@ -22,6 +22,9 @@ def nextMonday():
 def strFile():
     return nextMonday().strftime('%y%m%d - News')
 
+def strLastFile():
+    return (nextMonday() + datetime.timedelta(-7)).strftime('%y%m%d - News')
+
 def strMonday():
     return nextMonday().strftime('%B %d, %Y')
 
