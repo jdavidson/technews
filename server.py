@@ -25,7 +25,19 @@ def base_page():
     if k:
         return k.get_contents_as_string()
     else:
-        return "This week's news hasn't been posted yet, and there's no way to see last week's news yet."
+        return "This week's news hasn't been posted yet. <a href='" + url_for('old_news') + "'>Last Week</a>"
+
+@app.route('/last_week/')
+def old_news():
+    print "old_news"
+    bucket = conn.get_bucket(s3bucketid)
+    print "bucket: %s" % (build.strLastFile() + '.html')
+    k = bucket.get_key(build.strLastFile() + '.html')
+    print "k"
+    if k:
+        return k.get_contents_as_string()
+    else:
+        return "Can't find last week's news.  Sorry."
 
 ## still in progress - you need to post a url to an excel file which isn't all that great, but it does work
 @app.route('/financings/', methods=['GET', 'POST'])
