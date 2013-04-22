@@ -35,6 +35,11 @@ def fill_in_source(item):
     item['source'] = source
     return item
 
+def count_items():
+    pocket = setup_pocket()
+    items = get_items(pocket)
+    return len(items['list'])
+
 def get_items(pocket):
     items = pocket.get()
     return items
