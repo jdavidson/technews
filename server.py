@@ -64,8 +64,8 @@ def get_news_html():
 def convert_news():
     if request.method == 'POST':
         html = build.convert_news(request.form['news_text'], '')
-
-        if request.form['save'] == 'save':
+        if request.form.has_key('save') and request.form['save'] == 'save':
+            # should add some form of security here
             bucket = conn.get_bucket(s3bucketid)
             k = Key(bucket)
             k.key = build.strFile() + '.html'
