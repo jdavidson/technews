@@ -9,3 +9,5 @@ venv
 *.pyc
 
 api.pyc
+
+*.swp
