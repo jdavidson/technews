@@ -83,9 +83,13 @@ def convert_shown_news():
     return render_template('enter_news.html', action=action, text=text)
 
 ## archive everything (separate action so you are sure when you want to do it) - just dumps out status
-@app.route('/archive/')
+@app.route('/archive/', methods=['GET', 'POST'])
 def archive_news():
-    return mypocket.archive_all_items()
+    if request.method == 'POST':
+        return mypocket.archive_all_items()
+    else:
+        count = mypocket.count_items()
+        return render_template('archive_confirm.html', action=url_for('archive_news'), count=count)
 
 if __name__ == '__main__':
     app.run(debug=True)
