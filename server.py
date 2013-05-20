@@ -28,7 +28,7 @@ def return_js():
 #########################
 
 ## get news from amazon, using the filename + filetype as the key, and error_msg if key doesn't exist
-def get_news(filename=build.strFile(), filetype=HTML, error_msg="Can't find that news.  Sorry."):
+def get_news_aws(filename=build.strFile(), filetype=HTML, error_msg="Can't find that news.  Sorry."):
     bucket = conn.get_bucket(s3bucketid)
     k = bucket.get_key(filename + filetype)
     if k:
@@ -39,24 +39,24 @@ def get_news(filename=build.strFile(), filetype=HTML, error_msg="Can't find that
 @app.route('/')
 def base_page():
     error_msg = "This week's news hasn't been posted yet. <a href='" + url_for('old_news') + "'>Last Week</a>"
-    return get_news(error_msg=error_msg)
+    return get_news_aws(error_msg=error_msg)
 
 @app.route('/mdown')
 def base_markdown():
     error_msg = "This week's news hasn't been posted yet. <a href='" + url_for('old_news_mdown') + "'>Last Week</a>"
-    return get_news(filetype=MARKDOWN, error_msg=error_msg)
+    return get_news_aws(filetype=MARKDOWN, error_msg=error_msg)
 
 @app.route('/last_week/')
 def old_news():
     filename = build.strLastFile()
     error_msg = "Can't find last week's news.  Sorry."
-    return get_news(filename=filename, error_msg=error_msg)
+    return get_news_aws(filename=filename, error_msg=error_msg)
 
 @app.route('/last_week/mdown')
 def old_news_mdown():
     filename = build.strLastFile()
     error_msg = "Can't find last week's news.  Sorry."
-    return get_news(filename=filename, filetype=MARKDOWN, error_msg=error_msg)
+    return get_news_aws(filename=filename, filetype=MARKDOWN, error_msg=error_msg)
 
 ######################
 ##### POCKET METHODS #####
