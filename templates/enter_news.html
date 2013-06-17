@@ -13,7 +13,7 @@
                             <div class="span5">
                                 <h3>Markdown News Editor</h3></div>
                             <div class="span5">
-                                <div class="row">&nbsp;</div>
+                                <div class="row">&nbsp;<span class="label label-error">{{ msg_info }}</span></div>
                                 <div class="row">
                                     <div class="span3 offset2 btn-group">
                                         <a class="btn" href="{{ action_clear }}">Clear</a>
@@ -34,9 +34,11 @@
                             <div class="span6">
                                 <button class="btn btn-info" type="submit" name="save">Save</button>
                                 <button class="btn btn-success" type="submit" name="preview">Preview</button>
-                                <span class="label label-success">{{ msg_success }}</span><span class="label label-error">{{ msg_error }}</span>
+                                <span class="label label-success">{{ msg_success }}</span>
+                                <br /><br /><a href="{{ action_financings }}">Financings</a>
                             </div>
-                            <div class="span1 offset3"><button class="btn btn-primary" type="submit" name="publish">Publish</button></div>
+                            <div class="span1 offset3"><button class="btn btn-primary" type="submit" name="publish">Publish</button>
+                                </div>
                         </div>
                     </form>
                 </div>
