@@ -2,15 +2,36 @@
 <html>
     <head>
         <title>Enter some news!</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     </head>
     <body>
-        <form action="{{ action }}" method="POST" name="url">
-            URL: <input name="url"></input>
-            <input type="submit">
-        </form>
-        <form enctype=multipart/form-data action="{{ action_file }}" method="POST" name="file">
-            File: <input name="file" type="file"></input>
-            <input type="submit">
-        </form>
+        <div class="container">
+            <div class="row">
+                <h3>Upload an excel (xls only) of financings to style</h3>
+            </div>
+            <div class="row">
+                <form class="form-inline" action="{{ action }}" method="POST" name="url">
+                    <div class="span1">URL:</div>
+                    <div class="span3">
+                        <input class="span3" type="text" placeholder="url" name="url"></input>
+                    </div>
+                    <div class="span2">
+                        <button type="submit" class="btn span2">Load URL</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <form class="form-inline" enctype=multipart/form-data action="{{ action_file }}" method="POST" name="file">
+                    <div class="span1">File:</div>
+                    <div class="span3">
+                        <input name="file" type="file"></input>
+                    </div>
+                    <div class="span2">
+                        <button type="submit" class="btn span2">Load File</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </body>
 </html>

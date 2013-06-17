@@ -9,20 +9,25 @@
         border-bottom-style: solid;
         border-bottom-color: darkgrey;
         border-bottom-width: 2px;
+
+        @media print
+            {
+            tr {page-break-inside:avoid}
+            }
         }
         </style>
-        <link href="../bootstrap.css" rel="stylesheet" media="screen">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     </head>
 <body class="">
     <h2 class="header">Redpoint Early Stage News <span style="float: right;">{{ date }}</span></h2>
     <div class="container" id="content">
-        <table class="table span10">
+        <table class="table span11">
             <thead>
                 <tr>
-                    <th style="width: 10%">Company</th>
-                    <th style="width: 45%">Description</th>
-                    <th style="width: 10%; text-align: center">$</th>
-                    <th style="width: 25%">Investors</th>
+                    <th class="span2">Company</th>
+                    <th class="span5">Description</th>
+                    <th class="span2" style="text-align: center">$</th>
+                    <th class="span3">Investors</th>
                 </tr>
             </thead>
             <tbody>
