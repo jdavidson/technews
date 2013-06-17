@@ -108,7 +108,7 @@ def convert_edit():
     text = get_news_aws(filetype=MARKDOWN, error_msg=error_msg)
     print "got text from aws"
     if text == error_msg:
-        text = mypocket.gimme_markdown()
+        # text = mypocket.gimme_markdown() #this could be blank, but I think this is a good starting place?
         print "couldn't get text from aws, grabbed from pocket instead"
     else:
         print "got text from aws, decoding"
