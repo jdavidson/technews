@@ -92,6 +92,8 @@ def convert_news():
         if request.form.has_key('save') and request.form['save'] == 'save':
             save_news(html, HTML)
             save_news(markdown, MARKDOWN)
+        elif request.form.has_key('save_md') and request.form['save_md'] == 'save':
+            save_news(markdown, MARKDOWN)
         return html
     else:
         action = url_for('convert_news')
@@ -102,6 +104,22 @@ def convert_news():
 def convert_shown_news():
     action = url_for('convert_news')
     text = mypocket.gimme_markdown()
+    return render_template('enter_news.html', action=action, text=text)
+
+## saveable and re-workable conversion template (this is where I'm trying to replace the need for an editor)
+@app.route('/convert/edit')
+def convert_edit():
+    action = url_for('convert_news')
+    action_load_raw = url_for('convert_shown_news')
+    action_load_saved = url_for('convert_edit')
+    error_msg = 'NOT_FOUND'
+    text = get_news_aws(filetype=MARKDOWN, error_msg=error_msg)
+    if text == error_msg:
+        text = mypocket.gimme_markdown()
+        print "couldn't get text from aws, grabbed from pocket instead"
+    else:
+        print "got text from aws, decoding"
+        text = text.decode('utf-8')
     return render_template('enter_news.html', action=action, text=text)
 
 ## archive everything (separate action so you are sure when you want to do it) - just dumps out status
