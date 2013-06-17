@@ -5,7 +5,11 @@
     </head>
     <body>
         <form action="{{ action }}" method="POST" name="url">
-            <input name="url"></input>
+            URL: <input name="url"></input>
+            <input type="submit">
+        </form>
+        <form enctype=multipart/form-data action="{{ action_file }}" method="POST" name="file">
+            File: <input name="file" type="file"></input>
             <input type="submit">
         </form>
     </body>
