@@ -11,3 +11,7 @@ venv
 api.pyc
 
 *.swp
+
+*.sublime-workspace
+
+*.sublime-project
