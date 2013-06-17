@@ -97,7 +97,7 @@ def gimme_markdown():
     new_items = parse_items(items)
     markdown = convert_to_markdown(new_items)
 
-    return initial_html + markdown
+    return initial_html + markdown, len(items['list'])
 
 def archive_all_items():
     pocket = setup_pocket()
