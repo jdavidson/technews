@@ -11,19 +11,6 @@ MARKDOWN = '.mdown'
 app = Flask(__name__)
 conn = boto.connect_s3()
 
-########################
-##### STATIC FILES #####
-########################
-
-## Static Files (this is cheating and should be moved to amazon)
-@app.route('/bootstrap.css')
-def return_css():
-    return open('bootstrap.css').read()
-
-@app.route('/bootstrap.js')
-def return_js():
-    return open('bootstrap.js').read()
-
 ##############################
 ##### BASE NEWS RETUNERS #####
 ##############################
