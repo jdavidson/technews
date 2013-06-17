@@ -6,9 +6,8 @@ def parse_url(url):
     excel_data = data.read()
     return parse_data(excel_data)
 
-def parse_file(filename):
-    data = open(filename)
-    excel_data = data.read()
+def parse_file(file):
+    excel_data = file.read()
     return parse_data(excel_data)
 
 def parse_data(excel_data):
@@ -46,4 +45,4 @@ def companies_to_html(companies):
 
 
 if __name__ == '__main__':
-    print parse_file('news.xls')
+    print parse_file(open('news.xls'))
