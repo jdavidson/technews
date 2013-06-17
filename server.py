@@ -2,6 +2,7 @@ from flask import Flask, request, url_for, render_template, Response
 import mypocket, build, read_excel
 import boto
 from boto.s3.key import Key
+from werkzeug import secure_filename
 
 s3bucketid = 'cchild-technews'
 HTML = '.html'
@@ -122,7 +123,23 @@ def convert_financings():
         table = read_excel.parse_url(url)
         return render_template('financings.html', table=table, date=build.strMonday())
     else:
-        return render_template('enter_excel.html', action=url_for('convert_financings'))
+        return render_template('enter_excel.html', action=url_for('convert_financings'), action_file=url_for('convert_financing_file'))
+
+def allowed_file(filename):
+    return '.' in filename and \
+       filename.rsplit('.', 1)[1] in set(['xls',])
+
+@app.route('/financings_file/', methods=['POST',])
+def convert_financing_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            table = read_excel.parse_file(file)
+            return render_template('financings.html', table=table, date=build.strMonday())
+        else:
+            return 'Error parsing file'
+    else:
+        return redirect(url_for('convert_financings'))
 
 if __name__ == '__main__':
     app.run(debug=True)
