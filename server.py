@@ -88,11 +88,14 @@ def save_news(contents, filetype=HTML):
 def convert_news():
     if request.method == 'POST':
         markdown = request.form['news_text']
-        html = build.convert_news(markdown, '')
-        if request.form.has_key('save') and request.form['save'] == 'save':
-            save_news(html, HTML)
+        ## figure out which button was pressed
+        print request.form
+        if request.form.has_key('save'):
             save_news(markdown, MARKDOWN)
-        elif request.form.has_key('save_md') and request.form['save_md'] == 'save':
+            return render_template('enter_news.html', action = url_for('convert_news'), text=markdown, msg_success="Saved!")
+        html = build.convert_news(markdown, '')
+        if request.form.has_key('publish'):
+            save_news(html, HTML)
             save_news(markdown, MARKDOWN)
         return html
     else:
@@ -109,11 +112,14 @@ def convert_shown_news():
 ## saveable and re-workable conversion template (this is where I'm trying to replace the need for an editor)
 @app.route('/convert/edit')
 def convert_edit():
+    print "got request"
     action = url_for('convert_news')
     action_load_raw = url_for('convert_shown_news')
     action_load_saved = url_for('convert_edit')
     error_msg = 'NOT_FOUND'
+    print "getting text from aws"
     text = get_news_aws(filetype=MARKDOWN, error_msg=error_msg)
+    print "got text from aws"
     if text == error_msg:
         text = mypocket.gimme_markdown()
         print "couldn't get text from aws, grabbed from pocket instead"
