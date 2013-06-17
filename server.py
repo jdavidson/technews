@@ -11,9 +11,9 @@ MARKDOWN = '.mdown'
 app = Flask(__name__)
 conn = boto.connect_s3()
 
-###################
+########################
 ##### STATIC FILES #####
-###################
+########################
 
 ## Static Files (this is cheating and should be moved to amazon)
 @app.route('/bootstrap.css')
@@ -24,9 +24,9 @@ def return_css():
 def return_js():
     return open('bootstrap.js').read()
 
-#########################
+##############################
 ##### BASE NEWS RETUNERS #####
-#########################
+##############################
 
 ## get news from amazon, using the filename + filetype as the key, and error_msg if key doesn't exist
 def get_news_aws(filename=build.strFile(), filetype=HTML, error_msg="Can't find that news.  Sorry."):
@@ -59,9 +59,9 @@ def old_news_mdown():
     error_msg = "Can't find last week's news.  Sorry."
     return get_news_aws(filename=filename, filetype=MARKDOWN, error_msg=error_msg)
 
-######################
+##########################
 ##### POCKET METHODS #####
-######################
+##########################
 
 ## show the markdown for the news
 @app.route('/news/')
@@ -73,9 +73,9 @@ def get_news():
 def get_news_html():
     return build.convert_news(mypocket.gimme_markdown(), '')
 
-###########################
+#################################
 ##### CONVERSION AND SAVING #####
-###########################
+#################################
 
 def save_news(contents, filetype=HTML):
     bucket = conn.get_bucket(s3bucketid)
