@@ -79,7 +79,8 @@ def build_news_template(text, msg_success='', msg_info=''):
                             action_clear = url_for('convert_news'),
                             action_pocket = url_for('convert_shown_news'),
                             action_load = url_for('convert_edit'),
-                            action_financings = url_for('convert_financings'))
+                            action_financings = url_for('convert_financings'),
+                            action_archive = url_for('archive_news'))
 
 ## convert submitted markdown to html, and potentially save it
 @app.route('/editor/', methods=['GET', 'POST'])
