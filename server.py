@@ -53,12 +53,14 @@ def old_news_mdown():
 ## show the markdown for the news
 @app.route('/news/')
 def get_news():
-    return Response(mypocket.gimme_markdown(), mimetype="text/plain")
+    text, count = mypocket.gimme_markdown()
+    return Response(text, mimetype="text/plain")
 
 ## convert the default markdown to html
 @app.route('/news/html')
 def get_news_html():
-    return build.convert_news(mypocket.gimme_markdown(), '')
+    text, count = mypocket.gimme_markdown()
+    return build.convert_news(text, '')
 
 #################################
 ##### CONVERSION AND SAVING #####
@@ -70,13 +72,14 @@ def save_news(contents, filetype=HTML):
     key.key = build.strFile() + filetype
     key.set_contents_from_string(contents)
 
-def build_news_template(text, msg_success='', msg_error=''):
+def build_news_template(text, msg_success='', msg_info=''):
     return render_template('enter_news.html',
                             action = url_for('convert_news'),
-                            text=text, msg_success=msg_success, msg_error=msg_error,
+                            text=text, msg_success=msg_success, msg_info=msg_info,
                             action_clear = url_for('convert_news'),
                             action_pocket = url_for('convert_shown_news'),
-                            action_load = url_for('convert_edit'))
+                            action_load = url_for('convert_edit'),
+                            action_financings = url_for('convert_financings'))
 
 ## convert submitted markdown to html, and potentially save it
 @app.route('/editor/', methods=['GET', 'POST'])
@@ -99,21 +102,24 @@ def convert_news():
 ## show the markdown convert dialog with the news filled in - kind of a useless endpoint but oh well
 @app.route('/editor/pocket')
 def convert_shown_news():
-    text = mypocket.gimme_markdown()
-    return build_news_template(text=text)
+    text, count = mypocket.gimme_markdown()
+    return build_news_template(text=text, msg_info=("Loaded %d stories from Pocket" % count))
 
 ## saveable and re-workable conversion template (this is where I'm trying to replace the need for an editor)
 @app.route('/editor/saved')
 def convert_edit():
     error_msg = 'No Saved News Yet'
     text = get_news_aws(filetype=MARKDOWN, error_msg=error_msg)
+    msg_info = ""
     if text == error_msg:
-        # text = mypocket.gimme_markdown() #this could be blank, but I think this is a good starting place?
-        print "couldn't get text from aws, grabbed from pocket instead"
+        # text, count = mypocket.gimme_markdown() #this could be blank, but I think this is a good starting place?
+        msg_info = "No saved news to load"
+        text = ''
     else:
         print "got text from aws, decoding"
         text = text.decode('utf-8')
-    return build_news_template(text=text)
+        msg_info = "Loaded saved text"
+    return build_news_template(text=text, msg_info=msg_info)
 
 ###################
 #### ARCHIVING ####
