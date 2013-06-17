@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Enter some news!</title>
+        <title>Markdown News Editor</title>
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     </head>
     <body>
@@ -10,18 +10,23 @@
                 <div class="span10 offset1">
                     <form action="{{ action }}" method="POST" name="news">
                         <div class="row">
-                            <div class="span6">
+                            <div class="span5">
                                 <h3>Markdown News Editor</h3></div>
-                            <div class="span3 offset1 btn-group">
-                                <button class="btn" href="{{ action_clear }}">Clear</button>
-                                <button class="btn" href="{{ action_pocket }}">Load Pocket</button>
-                                <button class="btn" href="{{ action_load }}">Load Saved</button>
+                            <div class="span5">
+                                <div class="row">&nbsp;</div>
+                                <div class="row">
+                                    <div class="span3 offset2 btn-group">
+                                        <a class="btn" href="{{ action_clear }}">Clear</a>
+                                        <a class="btn" href="{{ action_pocket }}">Load Pocket</a>
+                                        <a class="btn" href="{{ action_load }}">Load Saved</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="span10">
-                                <textarea name="news_text" style="background-color: #1d1f21; color: #c5c8c6; font-family: monospaced;" rows=30 class="block span10">{{ text }}</textarea>
+                                <textarea name="news_text" style="" rows=30 class="block span10">{{ text }}</textarea>
                             </div>
                         </div>
 
