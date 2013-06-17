@@ -5,11 +5,37 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     </head>
     <body>
-        <form action="{{ action }}" method="POST" name="news">
-            <textarea name="news_text" rows="30", cols="90">{{ text }}</textarea>
-            <br/>
-            <input type="checkbox" name="save" value="save">Save</input>
-            <input type="submit">
-        </form>
+        <div class="container" style="height: 100%;">
+            <div class="row">
+                <div class="span10 offset1">
+                    <form action="{{ action }}" method="POST" name="news">
+                        <div class="row">
+                            <div class="span6">
+                                <h3>Markdown News Editor</h3></div>
+                            <div class="span3 offset1 btn-group">
+                                <button class="btn" href="{{ action_clear }}">Clear</button>
+                                <button class="btn" href="{{ action_pocket }}">Load Pocket</button>
+                                <button class="btn" href="{{ action_load }}">Load Saved</button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="span10">
+                                <textarea name="news_text" style="background-color: #1d1f21; color: #c5c8c6; font-family: monospaced;" rows=30 class="block span10">{{ text }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="span6">
+                                <button class="btn btn-info" type="submit" name="save">Save</button>
+                                <button class="btn btn-success" type="submit" name="preview">Preview</button>
+                                <span class="label label-success">{{ msg_success }}</span><span class="label label-error">{{ msg_error }}</span>
+                            </div>
+                            <div class="span1 offset3"><button class="btn btn-primary" type="submit" name="publish">Publish</button></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
