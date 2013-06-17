@@ -70,6 +70,14 @@ def save_news(contents, filetype=HTML):
     key.key = build.strFile() + filetype
     key.set_contents_from_string(contents)
 
+def build_news_template(text, msg_success='', msg_error=''):
+    return render_template('enter_news.html',
+                            action = url_for('convert_news'),
+                            text=text, msg_success=msg_success, msg_error=msg_error,
+                            action_clear = url_for('convert_news'),
+                            action_pocket = url_for('convert_shown_news'),
+                            action_load = url_for('convert_edit'))
+
 ## convert submitted markdown to html, and potentially save it
 @app.route('/editor/', methods=['GET', 'POST'])
 def convert_news():
@@ -79,41 +87,37 @@ def convert_news():
         print request.form
         if request.form.has_key('save'):
             save_news(markdown, MARKDOWN)
-            return render_template('enter_news.html', action = url_for('convert_news'), text=markdown, msg_success="Saved!")
+            return build_news_template(text=markdown, msg_success="Saved!")
         html = build.convert_news(markdown, '')
         if request.form.has_key('publish'):
             save_news(html, HTML)
             save_news(markdown, MARKDOWN)
         return html
     else:
-        action = url_for('convert_news')
-        return render_template('enter_news.html', action=action, text='')
+        return build_news_template(text='')
 
 ## show the markdown convert dialog with the news filled in - kind of a useless endpoint but oh well
 @app.route('/editor/pocket')
 def convert_shown_news():
-    action = url_for('convert_news')
     text = mypocket.gimme_markdown()
-    return render_template('enter_news.html', action=action, text=text)
+    return build_news_template(text=text)
 
 ## saveable and re-workable conversion template (this is where I'm trying to replace the need for an editor)
 @app.route('/editor/saved')
 def convert_edit():
-    print "got request"
-    action = url_for('convert_news')
-    action_load_raw = url_for('convert_shown_news')
-    action_load_saved = url_for('convert_edit')
-    error_msg = 'NOT_FOUND'
-    print "getting text from aws"
+    error_msg = 'No Saved News Yet'
     text = get_news_aws(filetype=MARKDOWN, error_msg=error_msg)
-    print "got text from aws"
     if text == error_msg:
         # text = mypocket.gimme_markdown() #this could be blank, but I think this is a good starting place?
         print "couldn't get text from aws, grabbed from pocket instead"
     else:
         print "got text from aws, decoding"
         text = text.decode('utf-8')
-    return render_template('enter_news.html', action=action, text=text)
+    return build_news_template(text=text)
+
+###################
+#### ARCHIVING ####
+###################
 
 ## archive everything (separate action so you are sure when you want to do it) - just dumps out status
 ## this (along with saving) should have some sort of authentication built in
@@ -125,8 +129,11 @@ def archive_news():
         count = mypocket.count_items()
         return render_template('archive_confirm.html', action=url_for('archive_news'), count=count)
 
+####################
+#### FINANCINGS ####
+####################
+
 ## still in progress - you need to post a url to an excel file which isn't all that great, but it does work
-## formatting is all screwed up though.  need to fix that
 @app.route('/financings/', methods=['GET', 'POST'])
 def convert_financings():
     if request.method == 'POST':
