@@ -153,6 +153,8 @@ def allowed_file(filename):
     return '.' in filename and \
        filename.rsplit('.', 1)[1] in set(['xls',])
 
+## upload and read a financing file
+## note that financings are not saved to S3 right now, so you have to save the output
 @app.route('/financings_file/', methods=['POST',])
 def convert_financing_file():
     if request.method == 'POST':
