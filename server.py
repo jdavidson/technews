@@ -71,7 +71,7 @@ def save_news(contents, filetype=HTML):
     key.set_contents_from_string(contents)
 
 ## convert submitted markdown to html, and potentially save it
-@app.route('/convert/', methods=['GET', 'POST'])
+@app.route('/editor/', methods=['GET', 'POST'])
 def convert_news():
     if request.method == 'POST':
         markdown = request.form['news_text']
@@ -90,14 +90,14 @@ def convert_news():
         return render_template('enter_news.html', action=action, text='')
 
 ## show the markdown convert dialog with the news filled in - kind of a useless endpoint but oh well
-@app.route('/convert/news')
+@app.route('/editor/pocket')
 def convert_shown_news():
     action = url_for('convert_news')
     text = mypocket.gimme_markdown()
     return render_template('enter_news.html', action=action, text=text)
 
 ## saveable and re-workable conversion template (this is where I'm trying to replace the need for an editor)
-@app.route('/convert/edit')
+@app.route('/editor/saved')
 def convert_edit():
     print "got request"
     action = url_for('convert_news')
