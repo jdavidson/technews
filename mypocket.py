@@ -1,4 +1,4 @@
-import api, os, pickle
+import api, os, pickle, urllib2
 
 ckey = os.environ['POCKET_CONSUMER_KEY']
 source_string = "[Source: "
@@ -33,7 +33,29 @@ def fill_in_source(item):
             domain = domain[0].upper() + domain[1:]
         source = domain
     item['source'] = source
+    # if it's a pando one, use the new download (but slower) method
+    if is_pando_source(item):
+        print "found a pando source"
+        item = fill_in_pando_source(item)
     return item
+
+# may do nothing if it couldn't understand the page, in which case it just returns the item
+def fill_in_pando_source(item):
+    data = urllib2.urlopen(item['url'])
+    html = data.read()
+    s = html.split('[Source: ')[1].split('</a>')[0].split('">')
+    link = s[0].split('="')[1]
+    source = s[1]
+    if link[0:7] == 'http://':
+        print "updated a pando source"
+        item['url'] = link
+        item['source'] = source
+    else:
+        print "didn't update a pando source"
+    return item
+
+def is_pando_source(item):
+    return item['url'][0:27] == u'http://pandodaily.com/news/'
 
 def count_items():
     pocket = setup_pocket()
@@ -61,7 +83,9 @@ def setup_pocket():
         pocket = api.API(ckey)
         pocket.authenticate()
         data = {'consumer_key': ckey,
-                'access_token': api.access_token}
+                'access_token': api.access_token,
+                'contentType': 'article',
+                'detailType': 'complete'}
         with file(f, 'w') as target:
             pickle.dump(data, target)
     return pocket
@@ -73,7 +97,7 @@ def parse_items(items):
         item = items['list'][index]
         # create the new item
         new_item = {'text': item['excerpt'],
-                    'url': item['given_url'],
+                    'url': item['resolved_url'],
                     'title': item['given_title']}
         # figure out the source
         new_item = fill_in_source(new_item)
@@ -87,7 +111,6 @@ def convert_to_markdown(items):
 
     for item in items:
         text += "_%s_:: %s [%s][%d]\n\n" % (item['title'], item['text'], item['source'], items.index(item))
-        sources += "\n[%d]: [%s]" % (items.index(item), item['url'])
         sources += "\n[%d]: %s" % (items.index(item), item['url'])
 
     return text + "\n" + sources
