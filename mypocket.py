@@ -88,6 +88,7 @@ def convert_to_markdown(items):
     for item in items:
         text += "_%s_:: %s [%s][%d]\n\n" % (item['title'], item['text'], item['source'], items.index(item))
         sources += "\n[%d]: [%s]" % (items.index(item), item['url'])
+        sources += "\n[%d]: %s" % (items.index(item), item['url'])
 
     return text + "\n" + sources
 
