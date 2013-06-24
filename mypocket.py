@@ -1,4 +1,5 @@
 import api, os, pickle, urllib2
+import threading
 
 ckey = os.environ['POCKET_CONSUMER_KEY']
 source_string = "[Source: "
@@ -90,9 +91,11 @@ def setup_pocket():
             pickle.dump(data, target)
     return pocket
 
+# v2 with threading!
 def parse_items(items):
     # convert into something more usable
     new_items = []
+
     for index in items['list']:
         item = items['list'][index]
         # create the new item
@@ -100,8 +103,14 @@ def parse_items(items):
                     'url': item['resolved_url'],
                     'title': item['given_title']}
         # figure out the source
-        new_item = fill_in_source(new_item)
+        # new_item = fill_in_source(new_item)
         new_items.append(new_item)
+
+    threads = [threading.Thread(target=fill_in_source, args=(item,)) for item in new_items]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
     return new_items
 
 def convert_to_markdown(items):
