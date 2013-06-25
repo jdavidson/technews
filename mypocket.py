@@ -1,10 +1,14 @@
 import api, os, pickle, urllib2
 import threading
+from urllib2 import HTTPError
 
 ckey = os.environ['POCKET_CONSUMER_KEY']
 source_string = "[Source: "
 end_source_string = "]"
 initial_html = "### Market Analysis and Industry News\n\n### Product Releases\n\n### Company Announcements\n\n### Talent\n\n### Exits\n\n### Venture Capital\n\n"
+
+def get_initial_html():
+    return initial_html
 
 def fill_in_source(item):
     source = ""
@@ -124,13 +128,16 @@ def convert_to_markdown(items):
 
     return text + "\n" + sources
 
-def gimme_markdown():
+def gimme_markdown(include_html=True):
     pocket = setup_pocket()
     items = get_items(pocket)
     new_items = parse_items(items)
     markdown = convert_to_markdown(new_items)
 
-    return initial_html + markdown, len(items['list'])
+    if include_html:
+        markdown = initial_html + markdown
+
+    return markdown, len(items['list'])
 
 def archive_all_items():
     pocket = setup_pocket()
