@@ -45,7 +45,12 @@ def fill_in_source(item):
 
 # may do nothing if it couldn't understand the page, in which case it just returns the item
 def fill_in_pando_source(item):
-    data = urllib2.urlopen(item['url'])
+    try:
+        data = urllib2.urlopen(item['url'])
+    except HTTPError as error:
+        print "failed to load url: %s" % item['url']
+        return item
+
     html = data.read()
     s = html.split('[Source: ')[1].split('</a>')[0].split('">')
     link = s[0].split('="')[1]
