@@ -40,7 +40,6 @@ def fill_in_source(item):
     item['source'] = source
     # if it's a pando one, use the new download (but slower) method
     if is_pando_source(item):
-        print "found a pando source"
         item = fill_in_pando_source(item)
     return item
 
@@ -55,8 +54,7 @@ def fill_in_pando_source(item):
         print "updated a pando source"
         item['url'] = link
         item['source'] = source
-    else:
-        print "didn't update a pando source"
+
     return item
 
 def is_pando_source(item):
