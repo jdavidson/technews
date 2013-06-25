@@ -72,7 +72,7 @@ def save_news(contents, filetype=HTML):
     key.key = build.strFile() + filetype
     key.set_contents_from_string(contents)
 
-def build_news_template(text, msg_success='', msg_info=''):
+def build_news_template(text, source_text='', msg_success='', msg_info=''):
     return render_template('enter_news.html',
                             action = url_for('convert_news'),
                             text=text, msg_success=msg_success, msg_info=msg_info,
@@ -80,7 +80,8 @@ def build_news_template(text, msg_success='', msg_info=''):
                             action_pocket = url_for('convert_shown_news'),
                             action_load = url_for('convert_edit'),
                             action_financings = url_for('convert_financings'),
-                            action_archive = url_for('archive_news'))
+                            action_archive = url_for('archive_news'),
+                            source_text=source_text)
 
 ## convert submitted markdown to html, and potentially save it
 @app.route('/editor/', methods=['GET', 'POST'])
@@ -103,8 +104,9 @@ def convert_news():
 ## show the markdown convert dialog with the news filled in - kind of a useless endpoint but oh well
 @app.route('/editor/pocket')
 def convert_shown_news():
-    text, count = mypocket.gimme_markdown()
-    return build_news_template(text=text, msg_info=("Loaded %d stories from Pocket" % count))
+    text, count = mypocket.gimme_markdown(include_html=False)
+    initial_html = mypocket.get_initial_html()
+    return build_news_template(text=initial_html, source_text=text, msg_info=("Loaded %d stories from Pocket" % count))
 
 ## saveable and re-workable conversion template (this is where I'm trying to replace the need for an editor)
 @app.route('/editor/saved')

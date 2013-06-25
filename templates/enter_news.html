@@ -26,9 +26,17 @@
 
                         <div class="row">
                             <div class="span10">
-                                <textarea name="news_text" style="" rows=30 class="block span10">{{ text }}</textarea>
+                                <textarea name="news_text" style="" rows={% if source_text %}15{% else %}30{% endif %} class="block span10">{{ text }}</textarea>
                             </div>
                         </div>
+
+                        {% if source_text %}
+                        <div class="row">
+                            <div class="span10">
+                                <textarea name="source_text" style="" rows=15 class="block span10">{{ source_text }}</textarea>
+                            </div>
+                        </div>
+                        {% endif %}
 
                         <div class="row">
                             <div class="span6">
