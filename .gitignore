@@ -16,3 +16,5 @@ api.pyc
 *.sublime-workspace
 
 *.sublime-project
+
+.export
