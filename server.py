@@ -72,6 +72,7 @@ def save_news(contents, filetype=HTML):
     key.key = build.strFile() + filetype
     key.set_contents_from_string(contents)
 
+## pass all the actions needed to the editor view
 def build_news_template(text, source_text='', msg_success='', msg_info=''):
     return render_template('enter_news.html',
                             action = url_for('convert_news'),
@@ -142,7 +143,7 @@ def archive_news():
 #### FINANCINGS ####
 ####################
 
-## still in progress - you need to post a url to an excel file which isn't all that great, but it does work
+# convert an excel file given via a URL.
 @app.route('/financings/', methods=['GET', 'POST'])
 def convert_financings():
     if request.method == 'POST':
