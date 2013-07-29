@@ -21,11 +21,11 @@ def companies_in_sheet(sheet):
     companies = []
 
     for row in range(8, sheet.nrows):
-        company = {'name' : sheet.cell(row, 1).value,
-                'description' : sheet.cell(row, 3).value,
+        company = {'name' : sheet.cell(row, 1).value.encode('ascii', errors='ignore').strip(),
+                'description' : sheet.cell(row, 3).value.encode('ascii', errors='ignore').strip(),
                 'transaction_value' : sheet.cell(row, 4).value,
-                'investors' : sheet.cell(row, 5).value,
-                'long_description' : sheet.cell(row, 6).value}
+                'investors' : sheet.cell(row, 5).value.encode('ascii', errors='ignore').strip(),
+                'long_description' : sheet.cell(row, 6).value.encode('ascii', errors='ignore').strip()}
         companies.append(company)
 
     return companies
@@ -36,10 +36,10 @@ def companies_to_html(companies):
     html = ''
     for company in companies:
         html += str.format("<tr>\n<td>%s</td>\n<td>%s</td>\n<td style='text-align: center'>%s</td>\n<td>%s</td>\n</tr>\n" %
-            (str(company['name']),
-             str(company['description']),
+            (company['name'],
+             company['description'],
              str(company['transaction_value']),
-             str(company['investors'])))
+             company['investors']))
 
     return html
 
