@@ -108,7 +108,7 @@ def parse_items(items):
         # create the new item
         new_item = {'text': item['excerpt'],
                     'url': item['resolved_url'],
-                    'title': item['given_title']}
+                    'title': item['resolved_title']}
         # figure out the source
         # new_item = fill_in_source(new_item)
         new_items.append(new_item)
