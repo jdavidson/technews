@@ -15,15 +15,6 @@ conn = boto.connect_s3()
 ##### BASE NEWS RETUNERS #####
 ##############################
 
-## get news from amazon, using the filename + filetype as the key, and error_msg if key doesn't exist
-def get_news_aws(filename=build.strFile(), filetype=HTML, error_msg="Can't find that news.  Sorry."):
-    bucket = conn.get_bucket(s3bucketid)
-    k = bucket.get_key(filename + filetype)
-    if k:
-        return k.get_contents_as_string()
-    else:
-        return error_msg
-
 @app.route('/')
 def base_page():
     error_msg = "This week's news hasn't been posted yet. <a href='" + url_for('old_news') + "'>Last Week</a>"
@@ -66,11 +57,21 @@ def get_news_html():
 ##### CONVERSION AND SAVING #####
 #################################
 
+## get news from amazon, using the filename + filetype as the key, and error_msg if key doesn't exist
+def get_news_aws(filename=build.strFile(), filetype=HTML, error_msg="Can't find that news.  Sorry."):
+    bucket = conn.get_bucket(s3bucketid)
+    k = bucket.get_key(filename + filetype)
+    if k:
+        return k.get_contents_as_string()
+    else:
+        return error_msg
+
 def save_news(contents, filetype=HTML):
     bucket = conn.get_bucket(s3bucketid)
     key = Key(bucket)
     key.key = build.strFile() + filetype
     key.set_contents_from_string(contents)
+    print "saved news to %s" % key.key
 
 ## pass all the actions needed to the editor view
 def build_news_template(text, source_text='', msg_success='', msg_info=''):
