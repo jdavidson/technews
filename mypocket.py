@@ -5,7 +5,7 @@ from urllib2 import HTTPError
 ckey = os.environ['POCKET_CONSUMER_KEY']
 source_string = "[Source: "
 end_source_string = "]"
-initial_html = "### Market Analysis and Industry News\n\n### Product Releases\n\n### Company Announcements\n\n### Talent\n\n### Exits\n\n### Venture Capital\n\n"
+initial_html = "### Market Analysis and Industry News\n\n### Product Releases\n\n### Company Announcements\n\n### Talent\n\n### Exits and Acquisitions\n\n### Venture Capital\n\n### Financings\n\n"
 
 def get_initial_html():
     return initial_html
