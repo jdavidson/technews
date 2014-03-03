@@ -106,9 +106,9 @@ def parse_items(items):
     for index in items['list']:
         item = items['list'][index]
         # create the new item
-        new_item = {'text': item['excerpt'],
-                    'url': item['resolved_url'],
-                    'title': item['resolved_title']}
+        new_item = {'text': item.get('excerpt', ''),
+                    'url': item.get('resolved_url', item.get('given_url', '')),
+                    'title': item.get('resolved_title', item.get('given_title', ''))}
         # figure out the source
         # new_item = fill_in_source(new_item)
         new_items.append(new_item)
