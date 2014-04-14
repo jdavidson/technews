@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Monday Agenda Generator</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container" style="height: 100%;">
+            <div class="row">
+                <div class="span10 offset1">
+                    <form action="{{ action }}" method="POST" name="news">
+                        <div class="row">
+                            <div class="span5">
+                                <h3>Monday Agenda Generator</h3>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="span10">
+                                <textarea name="datatable" style="" rows=30 class="block span10"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="span1 offset9"><button class="btn" type="submit" name="render">Render</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
