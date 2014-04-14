@@ -1,5 +1,5 @@
 from flask import Flask, request, url_for, render_template, Response
-import mypocket, build, read_excel
+import mypocket, build, read_excel, fmt_agenda
 import boto
 from boto.s3.key import Key
 from werkzeug import secure_filename
@@ -171,6 +171,23 @@ def convert_financing_file():
             return 'Error parsing file'
     else:
         return redirect(url_for('convert_financings'))
+
+###########################
+#### AGENDA FORMATTING ####
+###########################
+
+@app.route('/agenda/', methods=['GET', 'POST'])
+def format_agenda():
+    if request.method == 'POST':
+        data = request.form['datatable']
+        table = fmt_agenda.format_agenda(data)
+        return render_template('agenda.html', table=table, date=build.strMonday())
+    else:
+        return render_template('enter_agenda.html', action=url_for('format_agenda'))
+
+#####################
+#### MAIN METHOD ####
+#####################
 
 if __name__ == '__main__':
     app.run(debug=True)
