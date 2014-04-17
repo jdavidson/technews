@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Early Stage Agenda - {{ date }}</title>
+        <style>
+            h2.header {
+            font-family: "Elena Web Basic";
+            font-size: 16pt;
+            border-bottom-style: solid;
+            border-bottom-color: gray;
+            border-bottom-width: 2px;
+            }
+
+            body {
+                font-size: 10pt !important;
+            }
+
+            @media print
+            {
+                tr, td { page-break-inside:avoid }
+                body, table, tr, td {
+                    font-size: 8pt !important;
+                }
+            }
+
+            tr.status_row {
+                font-weight: bold;
+                background-color: lightblue !important;
+                -webkit-print-color-adjust: exact;
+            }
+        </style>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    </head>
+<body class="">
+    <div class="container" id="content">
+        <div class="row">
+            <h2 class="header">Monday Deal List <span style="float: right;">{{ date }}</span></h2>
+        </div>
+        <div class="row">
+            <table class="table table-condensed span12">
+                <thead>
+                    <tr>
+                        <th class="span2">Company</th>
+                        <th class="span2">Contacts</th>
+                        <th class="span3">Description</th>
+                        <th class="span2">Sector</th>
+                        <th class="span1">Round</th>
+                        <th class="span1">Deal Team</th>
+                        <th class="span1">Days in Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ table | safe }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
