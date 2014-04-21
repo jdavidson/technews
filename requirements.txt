@@ -7,5 +7,6 @@ gunicorn==0.17.4
 itsdangerous==0.21
 markdown2==2.1.0
 requests==1.2.3
+unicodecsv==0.9.4
 wsgiref==0.1.2
 xlrd==0.9.2
