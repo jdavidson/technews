@@ -38,7 +38,7 @@ def render_row(row, header):
         if header[col] == 'Contacts':
             tr = tr.replace(',', ', ')
         text = text.replace("{{ " + header[col] + " }}", tr)
-        print "replacing %s with %s" % ("{{ " + header[col] + " }}", row[col])
+#        print "replacing %s with %s" % ("{{ " + header[col] + " }}", row[col])
 
     return text
 
