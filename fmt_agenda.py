@@ -10,6 +10,13 @@ header_descrs = ['Company',
                  'Deal Team',
                  'Days in Status']
 
+inactive_header_descrs = ['Company',
+                          'Contacts',
+                          'Description',
+                          'Deal Team',
+                          'Owner',
+                          'Inactive']
+
 # names of relateiq columns that map to columns to use (ignored RIQ columns won't show up)
 header_cols = ['Name',
                'Contacts',
@@ -19,14 +26,22 @@ header_cols = ['Name',
                'Deal Team',
                'Days in Current Status']
 
+inactive_header_cols = ['Name',
+                        'Contacts',
+                        'Description',
+                        'Deal Team',
+                        'Owner',
+                        'Inactive (days)']
+
 # sizes (for bootstrap) of each column above - should add up to 12
 header_sizes = [2,2,3,2,1,1,1]
+inactive_header_sizes = [2,2,3,2,2,1]
 
 status_order = {'Signed Deal': 1,
                 'Diligence': 2,
                 'Met': 3}
 
-def render_row(row, header):
+def render_row(row, header, header_cols=header_cols):
     text = "<tr>"
     for hc in header_cols:
         text += "<td>{{ %s }}</td>" % hc
@@ -42,18 +57,29 @@ def render_row(row, header):
 
     return text
 
-def format_table_header():
+def format_table_header(inactive):
     output = ""
-    for i in range(len(header_descrs)):
-        output += '<th class="span%s">%s</th>\n' % (header_sizes[i], header_descrs[i])
+    hds = header_descrs
+    hss = header_sizes
+    if inactive:
+        hds = inactive_header_descrs
+        hss = inactive_header_sizes
+
+    for i in range(len(hds)):
+        output += '<th class="span%s">%s</th>\n' % (hss[i], hds[i])
     return output
 
-def format_agenda(data):
+def format_agenda(data, inactive):
     df = StringIO.StringIO(unicode(data).encode("utf-8"))
     reader = unicodecsv.reader(df, delimiter='\t')
     header = reader.next() # get the column headers
     status_col = header.index('Status')
     days_col = header.index('Days in Current Status')
+    hc = header_cols
+    if inactive:
+        hc = inactive_header_cols
+        days_col = header.index('Inactive (days)')
+
     last_status = ""
     output = ""
 
@@ -67,6 +93,6 @@ def format_agenda(data):
             output += '<tr class="status_row"><td colspan=%s>%s</td></tr>\n' % (len(header_cols), row[status_col])
             last_status = row[status_col]
 
-        output = output + render_row(row, header)
+        output = output + render_row(row, header, hc)
 
     return output
