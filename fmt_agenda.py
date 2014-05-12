@@ -7,8 +7,8 @@ header_descrs = ['Company',
                  'Description',
                  'Sector',
                  'Round',
-                 'Deal Team',
-                 'Days in Status']
+                 'Team',
+                 'Days']
 
 inactive_header_descrs = ['Company',
                           'Contacts',
