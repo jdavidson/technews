@@ -182,8 +182,11 @@ def format_agenda():
         data = request.form['datatable']
         #inactive = request.form['inactive'] # this was causing problems, need to fix for when its not checked
         inactive = None
+        print "got data, forming table"
         table = fmt_agenda.format_agenda(data, inactive)
+        print "forming table_header"
         table_header = fmt_agenda.format_table_header(inactive)
+        print "rendering..."
         return render_template('agenda.html', table=table, table_header=table_header, date=build.strMonday())
     else:
         return render_template('enter_agenda.html', action=url_for('format_agenda'))
