@@ -179,9 +179,8 @@ def convert_financing_file():
 @app.route('/agenda/', methods=['GET', 'POST'])
 def format_agenda():
     if request.method == 'POST':
-        data = request.form['datatable']
-        #inactive = request.form['inactive'] # this was causing problems, need to fix for when its not checked
-        inactive = None
+        data = request.form.get('datatable', '')
+        inactive = request.form.get('inactive')
         print "got data, forming table"
         table = fmt_agenda.format_agenda(data, inactive)
         print "forming table_header"
