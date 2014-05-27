@@ -33,6 +33,26 @@ inactive_header_cols = ['Name',
                         'Owner',
                         'Inactive (days)']
 
+initial_translation = { 'Adil Syed': 'AS',
+                        'Alex Clayton': 'AC',
+                        'Allen Beasley': 'WAB',
+                        'Chris Child': 'CPC',
+                        'Chris Moore': 'CBM',
+                        'Edward Suh': 'ES',
+                        'Elliot Geidt': 'EG',
+                        'Jamie Davidson': 'JD',
+                        'Jeff Brody': 'JDB',
+                        'Mahesh Vellanki': 'MV',
+                        'Pueo Keffer': 'PGK',
+                        'Ryan Sarver': 'RS',
+                        'Satish Dharmaraj': 'SD',
+                        'Scott Raney': 'SCR',
+                        'Tim Haley': 'TMH',
+                        'Tom Dyal': 'RTD',
+                        'Tom Tunguz': 'TT',
+                        'geoff yang': 'GYY',
+                        'john walecka': 'JLW'}
+
 # sizes (for bootstrap) of each column above - should add up to 12
 header_sizes = [2,2,3,2,1,1,1]
 inactive_header_sizes = [2,2,3,2,2,1]
@@ -61,10 +81,12 @@ def render_row(row, header, header_cols=header_cols):
         # first, contacts, add spaces after the commas to make it look better
         if header[col] == 'Contacts':
             tr = tr.replace(',', ', ')
-        # second, deal team.  if empty, use the initials of the owner
+
+        # second, deal team.  if empty, use the initials of the owner, either from the lookup list or generated
         if header[col] == 'Deal Team' and tr == '':
-            #tr = ''.join([c[0].upper() for c in row[header.index('Owner')].split(' ')]) # initials
-            tr = row[header.index('Owner')] #name
+            owner = row[header.index('Owner')]
+            tr = initial_translation.get(owner) or ''.join([c[0].upper() for c in owner.split(' ')]) # grab initials from initial_translation or, if they don't exist, generate them
+
         text = text.replace("{{ " + header[col] + " }}", tr)
 #        print "replacing %s with %s" % ("{{ " + header[col] + " }}", row[col])
 
@@ -95,27 +117,30 @@ def format_table_header(inactive):
 def format_agenda(data, inactive):
     df = StringIO.StringIO(unicode(data).encode("utf-8"))
     reader = unicodecsv.reader(df, delimiter='\t')
-    header = reader.next() # get the column headers
-    status_col = header.index('Status')
-    days_col = header.index('Days in Current Status')
+    header = reader.next() # get the column headers, assumed to be the first row
+    status_col = header.index('Status') # back into the status and days in the current status columns, since we'll need them later
+    sort_col = header.index('Days in Current Status')
     hc = header_cols
+
     if inactive:
         hc = inactive_header_cols
-        days_col = header.index('Inactive (days)')
+        sort_col = header.index('Inactive (days)') # change the sort column
 
     last_status = ""
     output = ""
 
+    # sort the reader by status col, followed by sort_col (assumed to be an int, and set to 0 if not a digit)
     sorted_reader = sorted(reader, key=lambda x:
-            (status_order[x[status_col]], int(x[days_col]) if x[days_col].isdigit() else 0))
+        (status_order[x[status_col]], int(x[sort_col]) if x[sort_col].isdigit() else 0))
 
+    # iterate through the sorted reader, creating new rows, and creating a status row whenever the status changes
     for row in sorted_reader:
-        # iterate through the rest of the rows and create the data structure
         if row[status_col] != last_status:
             # add a column to break up the statuses
             output += '<tr class="status_row"><td colspan=%s>%s</td></tr>\n' % (len(header_cols), row[status_col])
             last_status = row[status_col]
 
+        # render the row
         output = output + render_row(row, header, hc)
 
     return output
