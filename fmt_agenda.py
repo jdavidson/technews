@@ -41,6 +41,11 @@ status_order = {'Signed Deal': 1,
                 'Diligence': 2,
                 'Met': 3}
 
+####################
+### RENDER A ROW ###
+####################
+### takes a row from the relateiq csv format and, given the matching header row and a list of columns to display, creates an html row
+
 def render_row(row, header, header_cols=header_cols):
     text = "<tr>"
     for hc in header_cols:
@@ -65,6 +70,11 @@ def render_row(row, header, header_cols=header_cols):
 
     return text
 
+#####################
+### RENDER HEADER ###
+#####################
+# creates a header row from the global variables for either regular agenda or inactive agenda
+
 def format_table_header(inactive):
     output = ""
     hds = header_descrs
@@ -76,6 +86,11 @@ def format_table_header(inactive):
     for i in range(len(hds)):
         output += '<th class="span%s">%s</th>\n' % (hss[i], hds[i])
     return output
+
+#####################
+### FORMAT AGENDA ###
+#####################
+# main entry point.  data is the full csv from relateiq, inactive is whether to use the inactive headers or regular headers
 
 def format_agenda(data, inactive):
     df = StringIO.StringIO(unicode(data).encode("utf-8"))
