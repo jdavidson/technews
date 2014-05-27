@@ -48,10 +48,18 @@ def render_row(row, header, header_cols=header_cols):
     text += "</tr>"
 
     print "rendering row: %s" % row
+    # loop through all the columns in header, and grab the associated info from row
     for col in range(len(header)):
-        tr = row[col]
+        tr = row[col] # grab the right piece of info
+
+        # special cases for a couple columns
+        # first, contacts, add spaces after the commas to make it look better
         if header[col] == 'Contacts':
             tr = tr.replace(',', ', ')
+        # second, deal team.  if empty, use the initials of the owner
+        if header[col] == 'Deal Team' and tr == '':
+            #tr = ''.join([c[0].upper() for c in row[header.index('Owner')].split(' ')]) # initials
+            tr = row[header.index('Owner')] #name
         text = text.replace("{{ " + header[col] + " }}", tr)
 #        print "replacing %s with %s" % ("{{ " + header[col] + " }}", row[col])
 
