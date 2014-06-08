@@ -57,9 +57,15 @@ initial_translation = { 'Adil Syed': 'AS',
 header_sizes = [2,2,3,2,1,1,1]
 inactive_header_sizes = [2,2,3,2,2,1]
 
+# determines the order in which each status type should appear in the list
 status_order = {'Signed Deal': 1,
                 'Diligence': 2,
                 'Met': 3}
+
+# determines the order in which companies in each group should be sorted (sort column is set in format_agenda)
+sort_order = {'Signed Deal': 1,
+              'Diligence': 1,
+              'Met': -1}
 
 ####################
 ### RENDER A ROW ###
@@ -131,7 +137,7 @@ def format_agenda(data, inactive):
 
     # sort the reader by status col, followed by sort_col (assumed to be an int, and set to 0 if not a digit)
     sorted_reader = sorted(reader, key=lambda x:
-        (status_order[x[status_col]], int(x[sort_col]) if x[sort_col].isdigit() else 0))
+        (status_order[x[status_col]], (int(x[sort_col]) * sort_order[x[status_col]]) if x[sort_col].isdigit() else 0))
 
     # iterate through the sorted reader, creating new rows, and creating a status row whenever the status changes
     for row in sorted_reader:
