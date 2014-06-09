@@ -71,7 +71,7 @@ def count_items():
     return len(items['list'])
 
 def get_items(pocket):
-    items = pocket.get()
+    items = pocket.get(sort='oldest')
     return items
 
 def setup_pocket():
