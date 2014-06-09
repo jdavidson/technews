@@ -70,6 +70,12 @@ class API(object):
         self.commit()
         url = 'https://getpocket.com/v3/get'
         self._validate_keys('get', kwargs)
+
+        print "requesting pocket data..."
+        print "kwargs: %s" % kwargs
+        print "json.dumps(kwargs): %s" % json.dumps(kwargs)
+        print "headers: %s" % self.headers
+
         return json.loads(requests.post(url,
             data=json.dumps(kwargs),
             headers=self.headers).content)
