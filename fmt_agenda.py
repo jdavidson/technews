@@ -93,6 +93,9 @@ def render_row(row, header, header_cols=header_cols):
             owner = row[header.index('Owner')]
             tr = initial_translation.get(owner) or ''.join([c[0].upper() for c in owner.split(' ')]) # grab initials from initial_translation or, if they don't exist, generate them
 
+        if header[col] == 'Owner':
+            tr = initial_translation.get(tr)
+
         text = text.replace("{{ " + header[col] + " }}", tr)
 #        print "replacing %s with %s" % ("{{ " + header[col] + " }}", row[col])
 
