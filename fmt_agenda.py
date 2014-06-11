@@ -106,13 +106,10 @@ def render_row(row, header, header_cols=header_cols):
 #####################
 # creates a header row from the global variables for either regular agenda or inactive agenda
 
-def format_table_header(inactive):
+def format_table_header():
     output = ""
     hds = header_descrs
     hss = header_sizes
-    if inactive:
-        hds = inactive_header_descrs
-        hss = inactive_header_sizes
 
     for i in range(len(hds)):
         output += '<th class="span%s">%s</th>\n' % (hss[i], hds[i])
@@ -123,17 +120,13 @@ def format_table_header(inactive):
 #####################
 # main entry point.  data is the full csv from relateiq, inactive is whether to use the inactive headers or regular headers
 
-def format_agenda(data, inactive):
+def format_agenda(data):
     df = StringIO.StringIO(unicode(data).encode("utf-8"))
     reader = unicodecsv.reader(df, delimiter='\t')
     header = reader.next() # get the column headers, assumed to be the first row
     status_col = header.index('Status') # back into the status and days in the current status columns, since we'll need them later
     sort_col = header.index('Days in Current Status')
     hc = header_cols
-
-    if inactive:
-        hc = inactive_header_cols
-        sort_col = header.index('Inactive (days)') # change the sort column
 
     last_status = ""
     output = ""

@@ -180,11 +180,10 @@ def convert_financing_file():
 def format_agenda():
     if request.method == 'POST':
         data = request.form.get('datatable', '')
-        inactive = request.form.get('inactive')
         print "got data, forming table"
-        table = fmt_agenda.format_agenda(data, inactive)
+        table = fmt_agenda.format_agenda(data)
         print "forming table_header"
-        table_header = fmt_agenda.format_table_header(inactive)
+        table_header = fmt_agenda.format_table_header()
         print "rendering..."
         return render_template('agenda.html', table=table, table_header=table_header, date=build.strMonday())
     else:
