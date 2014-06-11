@@ -1,38 +1,18 @@
 import StringIO
 import unicodecsv
 
-# Descriptions of columns to show in output
-header_descrs = ['Company',
-                 'Contacts',
-                 'Description',
-                 'Sector',
-                 'Round',
-                 'Team',
-                 'Days']
+# columns to display, in order.  (Displayed Name, RelateIQ Column Name, bootstrap column width (should add to 12))
+columns = [('Company', 'Name', 2),
+           ('Contacts', 'Contacts', 2),
+           ('Description', 'Description', 3),
+           ('Sector', 'Sector', 1),
+           ('Round', 'Round', 1),
+           ('Team', 'Deal Team', 1),
+           ('Owner', 'Owner', 1),
+           ('Days', 'Days in Current Status', 1),
+           ('Inactive', 'Inactive (days)', 1)]
 
-inactive_header_descrs = ['Company',
-                          'Contacts',
-                          'Description',
-                          'Deal Team',
-                          'Owner',
-                          'Inactive']
-
-# names of relateiq columns that map to columns to use (ignored RIQ columns won't show up)
-header_cols = ['Name',
-               'Contacts',
-               'Description',
-               'Sector',
-               'Round',
-               'Deal Team',
-               'Days in Current Status']
-
-inactive_header_cols = ['Name',
-                        'Contacts',
-                        'Description',
-                        'Deal Team',
-                        'Owner',
-                        'Inactive (days)']
-
+# converts names to initials.  If not in this list, will just use first and last initials
 initial_translation = { 'Adil Syed': 'AS',
                         'Alex Clayton': 'AC',
                         'Allen Beasley': 'WAB',
@@ -53,9 +33,6 @@ initial_translation = { 'Adil Syed': 'AS',
                         'geoff yang': 'GYY',
                         'john walecka': 'JLW'}
 
-# sizes (for bootstrap) of each column above - should add up to 12
-header_sizes = [2,2,3,2,1,1,1]
-inactive_header_sizes = [2,2,3,2,2,1]
 
 # determines the order in which each status type should appear in the list
 status_order = {'Signed Deal': 1,
@@ -72,7 +49,7 @@ sort_order = {'Signed Deal': 1,
 ####################
 ### takes a row from the relateiq csv format and, given the matching header row and a list of columns to display, creates an html row
 
-def render_row(row, header, header_cols=header_cols):
+def render_row(row, header, header_cols):
     text = "<tr>"
     for hc in header_cols:
         text += "<td>{{ %s }}</td>" % hc
@@ -80,6 +57,7 @@ def render_row(row, header, header_cols=header_cols):
 
     print "rendering row: %s" % row
     # loop through all the columns in header, and grab the associated info from row
+
     for col in range(len(header)):
         tr = row[col] # grab the right piece of info
 
@@ -107,12 +85,7 @@ def render_row(row, header, header_cols=header_cols):
 # creates a header row from the global variables for either regular agenda or inactive agenda
 
 def format_table_header():
-    output = ""
-    hds = header_descrs
-    hss = header_sizes
-
-    for i in range(len(hds)):
-        output += '<th class="span%s">%s</th>\n' % (hss[i], hds[i])
+    output = "\n".join(['<th class="span%s">%s</th>' % (width, title) for (title, riqname, width) in columns ])
     return output
 
 #####################
@@ -124,12 +97,15 @@ def format_agenda(data):
     df = StringIO.StringIO(unicode(data).encode("utf-8"))
     reader = unicodecsv.reader(df, delimiter='\t')
     header = reader.next() # get the column headers, assumed to be the first row
+    print "header: %s" % header
     status_col = header.index('Status') # back into the status and days in the current status columns, since we'll need them later
     sort_col = header.index('Days in Current Status')
-    hc = header_cols
 
     last_status = ""
     output = ""
+
+    header_cols = [riqname for (title, riqname, width) in columns]
+    #header_indicies = {j:i for i, j in enumerate(header)}
 
     # sort the reader by status col, followed by sort_col (assumed to be an int, and set to 0 if not a digit)
     sorted_reader = sorted(reader, key=lambda x:
@@ -139,10 +115,10 @@ def format_agenda(data):
     for row in sorted_reader:
         if row[status_col] != last_status:
             # add a column to break up the statuses
-            output += '<tr class="status_row"><td colspan=%s>%s</td></tr>\n' % (len(header_cols), row[status_col])
+            output += '<tr class="status_row"><td colspan=%s>%s</td></tr>\n' % (len(columns), row[status_col])
             last_status = row[status_col]
 
         # render the row
-        output = output + render_row(row, header, hc)
+        output = output + render_row(row, header, header_cols)
 
     return output
