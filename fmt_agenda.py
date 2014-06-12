@@ -50,33 +50,22 @@ sort_order = {'Signed Deal': 1,
 ### takes a row from the relateiq csv format and, given the matching header row and a list of columns to display, creates an html row
 
 def render_row(row, header, header_cols):
-    text = "<tr>"
-    for hc in header_cols:
-        text += "<td>{{ %s }}</td>" % hc
-    text += "</tr>"
+    dz = dict(zip(header, row))
 
-    print "rendering row: %s" % row
-    # loop through all the columns in header, and grab the associated info from row
+    def initials(person):
+        return initial_translation.get(person) or ''.join([c[0].upper() for c in person.split(' ')])
 
-    for col in range(len(header)):
-        tr = row[col] # grab the right piece of info
+    def fmt(column, data):
+        if column == 'Contacts':
+            return data.replace(',', ', ')
+        elif column == 'Owner':
+            return initials(data)
+        elif column == 'Deal Team' and data == '':
+            return initials(dz['Owner'])
+        else:
+            return data
 
-        # special cases for a couple columns
-        # first, contacts, add spaces after the commas to make it look better
-        if header[col] == 'Contacts':
-            tr = tr.replace(',', ', ')
-
-        # second, deal team.  if empty, use the initials of the owner, either from the lookup list or generated
-        if header[col] == 'Deal Team' and tr == '':
-            owner = row[header.index('Owner')]
-            tr = initial_translation.get(owner) or ''.join([c[0].upper() for c in owner.split(' ')]) # grab initials from initial_translation or, if they don't exist, generate them
-
-        if header[col] == 'Owner':
-            tr = initial_translation.get(tr)
-
-        text = text.replace("{{ " + header[col] + " }}", tr)
-#        print "replacing %s with %s" % ("{{ " + header[col] + " }}", row[col])
-
+    text = "<tr>\n" + "".join(["<td>" + fmt(r, dz[r]) + "</td>\n" for r in header_cols]) + "</tr>\n"
     return text
 
 #####################
