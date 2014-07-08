@@ -1,14 +1,34 @@
-import api, os, pickle, urllib2
+import api
+import os
+import pickle
+import urllib2
 import threading
 from urllib2 import HTTPError
 
 ckey = os.environ['POCKET_CONSUMER_KEY']
 source_string = "[Source: "
 end_source_string = "]"
-initial_html = "### Market Analysis and Industry News\n\n### Product Releases\n\n### Company Announcements\n\n### Talent\n\n### Exits and Acquisitions\n\n### Venture Capital\n\n### Financings\n\n"
+initial_html = """
+### Market Analysis and Industry News
+
+### Product Releases
+
+### Company Announcements
+
+### Talent
+
+### Exits and Acquisitions
+
+### Venture Capital
+
+### Financings
+
+"""
+
 
 def get_initial_html():
     return initial_html
+
 
 def fill_in_source(item):
     source = ""
@@ -28,7 +48,7 @@ def fill_in_source(item):
         else:
             domain_start += len("http://")
         domain_end = url.find("/", domain_start)
-        domain = url[domain_start:domain_end] # just split out the domain
+        domain = url[domain_start:domain_end]  # just split out the domain
         domain = domain[0:domain.rfind(".")]  # and remove the last bit (.com etc)
         if "." in domain:
             domain = domain[domain.find(".")+1:]
@@ -43,12 +63,13 @@ def fill_in_source(item):
         item = fill_in_pando_source(item)
     return item
 
+
 # may do nothing if it couldn't understand the page, in which case it just returns the item
 def fill_in_pando_source(item):
     try:
         data = urllib2.urlopen(item['url'])
     except HTTPError as error:
-        print "failed to load url: %s" % item['url']
+        print "failed to load url: %s [%s]" % (item['url'], error)
         return item
 
     html = data.read()
@@ -62,17 +83,21 @@ def fill_in_pando_source(item):
 
     return item
 
+
 def is_pando_source(item):
     return item['url'][0:27] == u'http://pandodaily.com/news/'
+
 
 def count_items():
     pocket = setup_pocket()
     items = get_items(pocket)
     return len(items['list'])
 
+
 def get_items(pocket):
     items = pocket.get(sort='oldest')
     return items
+
 
 def setup_pocket():
     pocket = ''
@@ -98,6 +123,7 @@ def setup_pocket():
             pickle.dump(data, target)
     return pocket
 
+
 # v2 with threading!
 def parse_items(items):
     # convert into something more usable
@@ -120,6 +146,7 @@ def parse_items(items):
         thread.join()
     return new_items
 
+
 def convert_to_markdown(items):
     # convert into markdown
     text = ""
@@ -130,6 +157,7 @@ def convert_to_markdown(items):
         sources += "\n[%d]: %s" % (items.index(item), item['url'])
 
     return text + "\n" + sources
+
 
 def gimme_markdown(include_html=True):
     pocket = setup_pocket()
@@ -142,6 +170,7 @@ def gimme_markdown(include_html=True):
 
     return markdown, len(items['list'])
 
+
 def archive_all_items():
     pocket = setup_pocket()
     items = get_items(pocket)
@@ -153,6 +182,7 @@ def archive_all_items():
             return status['action_results']
     else:
         return 'Nothing to Archive'
+
 
 def archive_items_commit(pocket, item_ids):
     for item_id in item_ids:
