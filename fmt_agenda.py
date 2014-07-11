@@ -13,25 +13,25 @@ columns = [('Company', 'Name', 2),
            ('Inactive', 'Inactive (days)', 1)]
 
 # converts names to initials.  If not in this list, will just use first and last initials
-initial_translation = { 'Adil Syed': 'AS',
-                        'Alex Clayton': 'AC',
-                        'Allen Beasley': 'WAB',
-                        'Chris Child': 'CPC',
-                        'Chris Moore': 'CBM',
-                        'Edward Suh': 'ES',
-                        'Elliot Geidt': 'EG',
-                        'Jamie Davidson': 'JD',
-                        'Jeff Brody': 'JDB',
-                        'Mahesh Vellanki': 'MV',
-                        'Pueo Keffer': 'PGK',
-                        'Ryan Sarver': 'RS',
-                        'Satish Dharmaraj': 'SD',
-                        'Scott Raney': 'SCR',
-                        'Tim Haley': 'TMH',
-                        'Tom Dyal': 'RTD',
-                        'Tom Tunguz': 'TT',
-                        'geoff yang': 'GYY',
-                        'john walecka': 'JLW'}
+initial_translation = {'Adil Syed': 'AS',
+                       'Alex Clayton': 'AC',
+                       'Allen Beasley': 'WAB',
+                       'Chris Child': 'CPC',
+                       'Chris Moore': 'CBM',
+                       'Edward Suh': 'ES',
+                       'Elliot Geidt': 'EG',
+                       'Jamie Davidson': 'JD',
+                       'Jeff Brody': 'JDB',
+                       'Mahesh Vellanki': 'MV',
+                       'Pueo Keffer': 'PGK',
+                       'Ryan Sarver': 'RS',
+                       'Satish Dharmaraj': 'SD',
+                       'Scott Raney': 'SCR',
+                       'Tim Haley': 'TMH',
+                       'Tom Dyal': 'RTD',
+                       'Tom Tunguz': 'TT',
+                       'geoff yang': 'GYY',
+                       'john walecka': 'JLW'}
 
 
 # determines the order in which each status type should appear in the list
@@ -47,7 +47,9 @@ sort_order = {'Signed Deal': 1,
 ####################
 ### RENDER A ROW ###
 ####################
-### takes a row from the relateiq csv format and, given the matching header row and a list of columns to display, creates an html row
+### takes a row from the relateiq csv format and, given the matching header row and a list of columns to display,
+### creates an html row
+
 
 def render_row(row, header, header_cols):
     dz = dict(zip(header, row))
@@ -73,21 +75,25 @@ def render_row(row, header, header_cols):
 #####################
 # creates a header row from the global variables for either regular agenda or inactive agenda
 
+
 def format_table_header():
-    output = "\n".join(['<th class="span%s">%s</th>' % (width, title) for (title, riqname, width) in columns ])
+    output = "\n".join(['<th class="span%s">%s</th>' % (width, title) for (title, riqname, width) in columns])
     return output
 
 #####################
 ### FORMAT AGENDA ###
 #####################
-# main entry point.  data is the full csv from relateiq, inactive is whether to use the inactive headers or regular headers
+# main entry point.  data is the full csv from relateiq,
+# inactive is whether to use the inactive headers or regular headers
+
 
 def format_agenda(data):
     df = StringIO.StringIO(unicode(data).encode("utf-8"))
     reader = unicodecsv.reader(df, delimiter='\t')
-    header = reader.next() # get the column headers, assumed to be the first row
+    header = reader.next()  # get the column headers, assumed to be the first row
     print "header: %s" % header
-    status_col = header.index('Status') # back into the status and days in the current status columns, since we'll need them later
+    # back into the status and days in the current status columns, since we'll need them later
+    status_col = header.index('Status')
     sort_col = header.index('Days in Current Status')
 
     last_status = ""
@@ -98,7 +104,8 @@ def format_agenda(data):
 
     # sort the reader by status col, followed by sort_col (assumed to be an int, and set to 0 if not a digit)
     sorted_reader = sorted(reader, key=lambda x:
-        (status_order[x[status_col]], (int(x[sort_col]) * sort_order[x[status_col]]) if x[sort_col].isdigit() else 0))
+                           (status_order[x[status_col]],
+                            (int(x[sort_col]) * sort_order[x[status_col]]) if x[sort_col].isdigit() else 0))
 
     # iterate through the sorted reader, creating new rows, and creating a status row whenever the status changes
     for row in sorted_reader:
