@@ -16,7 +16,7 @@ class authenticated(object):
         return self.f(self.instance, **kwargs)
 
     def __get__(self, instance,
-        instancetype):
+                instancetype):
         self.instance = instance
         return self
 
@@ -31,8 +31,8 @@ class authenticated(object):
 
 class API(object):
     headers = {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'X-Accept': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
+        'X-Accept': 'application/json',
     }
 
     def __init__(self, consumer_key):
@@ -77,13 +77,13 @@ class API(object):
         print "headers: %s" % self.headers
 
         return json.loads(requests.post(url,
-            data=json.dumps(kwargs),
-            headers=self.headers).content)
+                          data=json.dumps(kwargs),
+                          headers=self.headers).content)
 
     _valid_keys = {
         'get': ['state', 'favorite', 'tag', 'contentType', 'sort',
-            'detailType', 'search', 'domain', 'since', 'count', 'offset',
-            'consumer_key', 'access_token'],
+                'detailType', 'search', 'domain', 'since', 'count', 'offset',
+                'consumer_key', 'access_token'],
         'add': ['url', 'title', 'tags', 'tweet_id'],
         'modify': ['actions', 'consumer_key', 'access_token'],
         'tag_rename': ['item_id', 'old_tag', 'new_tag'],
@@ -98,8 +98,7 @@ class API(object):
     def _validate_keys(self, action, kwargs):
         # TODO: Better errors
         assert len(set(
-            kwargs.keys()).difference(
-                self._valid_keys[action])) == 0
+            kwargs.keys()).difference(self._valid_keys[action])) == 0
 
     @authenticated
     def commit(self, **kwargs):
@@ -117,7 +116,7 @@ class API(object):
         kwargs['actions'] = actions
         self._validate_keys('modify', kwargs)
         return json.loads(requests.post(url, data=json.dumps(kwargs),
-                                             headers=self.headers).content)
+                                        headers=self.headers).content)
 
 
 class transaction(object):
@@ -138,8 +137,8 @@ def action_builder(action):
     f.__name__ = action
     return f
 for action in ['add', 'archive', 'favorite', 'unfavorite', 'delete',
-                'tags_add', 'tags_remove', 'tags_replace', 'tags_clear',
-                'tag_rename']:
+               'tags_add', 'tags_remove', 'tags_replace', 'tags_clear',
+               'tag_rename']:
     setattr(API, action, action_builder(action))
 
 
@@ -163,10 +162,10 @@ class Authenticator(object):
                                'request_token=%(request_token)s'
                                '&redirect_uri=%(redirect_uri)s',
             'access_token':    'https://getpocket.com/v3/oauth/authorize'
-    }
+            }
     headers = {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'X-Accept': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
+        'X-Accept': 'application/json',
     }
 
     def __init__(self, consumer_key):
@@ -183,9 +182,9 @@ class Authenticator(object):
     def get_request_token(self):
         """Step 2: Obtain a request token"""
         params = {
-                'consumer_key': self.consumer_key,
-                'redirect_uri': 'is-this-even-used',
-                'state': 'foo'
+            'consumer_key': self.consumer_key,
+            'redirect_uri': 'is-this-even-used',
+            'state': 'foo'
         }
         resp = requests.post(self.URLs['request_token'],
                              data=json.dumps(params),
@@ -201,10 +200,10 @@ class Authenticator(object):
         """
         import webbrowser
         webbrowser.open(
-                self.URLs['authorize_token'] % {
+            self.URLs['authorize_token'] % {
                 'request_token': self.code,
                 'redirect_uri': 'http://localhost:8000'
-        })
+            })
         wait_for_response(8000)
 
     def get_access_token(self):
@@ -213,8 +212,8 @@ class Authenticator(object):
         """
 
         params = {
-                'consumer_key': self.consumer_key,
-                'code': self.code,
+            'consumer_key': self.consumer_key,
+            'code': self.code,
         }
         resp = requests.post(self.URLs['access_token'],
                              data=json.dumps(params),
