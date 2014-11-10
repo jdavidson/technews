@@ -84,7 +84,6 @@ def format_table_header():
 ### FORMAT AGENDA ###
 #####################
 # main entry point.  data is the full csv from relateiq,
-# inactive is whether to use the inactive headers or regular headers
 
 
 def format_agenda(data):
@@ -94,7 +93,9 @@ def format_agenda(data):
     print "header: %s" % header
     # back into the status and days in the current status columns, since we'll need them later
     status_col = header.index('Status')
-    sort_col = header.index('Days in Current Status')
+    days_col = header.index('Days in Current Status')
+    inactive_col = header.index('Inactive (days)')
+    sort_col = days_col
 
     last_status = ""
     output = ""
@@ -107,6 +108,8 @@ def format_agenda(data):
                            (status_order[x[status_col]],
                             (int(x[sort_col]) * sort_order[x[status_col]]) if x[sort_col].isdigit() else 0))
 
+    inactive_rows = []
+
     # iterate through the sorted reader, creating new rows, and creating a status row whenever the status changes
     for row in sorted_reader:
         if row[status_col] != last_status:
@@ -115,6 +118,19 @@ def format_agenda(data):
             last_status = row[status_col]
 
         # render the row
+
+        if row[status_col] == 'Met':
+          # filter out really inactive ones
+          if row[days_col] and int(row[days_col]) > 30 and (not row[inactive_col] or int(row[inactive_col]) > 14):
+            #print "inactive: days_col: %s inactive_col: %s" % (row[days_col], row[inactive_col])
+            inactive_rows.append(row)
+            continue
+
         output = output + render_row(row, header, header_cols)
+
+    # add the inactive group
+    output += '<tr class="status_row"><td colspan=%s>%s</td></tr>\n' % (len(columns), 'Inactive Deals (Met)')
+    for row in inactive_rows:
+      output = output + render_row(row, header, header_cols)
 
     return output
