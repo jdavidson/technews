@@ -22,7 +22,7 @@ def parse_data(excel_data):
 
 
 def short_comments(name, comments):
-    print "parsing: (%s, %s)" % (name, comments)
+    #print "parsing: (%s, %s)" % (name, comments)
 
     if comments.find(name) == 0:
         st = comments.replace(name, '')
