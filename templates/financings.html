@@ -15,6 +15,7 @@
             tr {page-break-inside:avoid}
             }
         }
+        .highlightedRow { font-weight: bold; }
         </style>
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     </head>
@@ -36,5 +37,13 @@
             </tbody>
         </table>
     </div>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+        $("tr").on (
+            "click", function() {
+                var element = $( this );
+                element.toggleClass("highlightedRow");
+            });
+    </script>
 </body>
 </html>
